@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import SubmitForm from "./components/SubmitForm";
+import Test from "./components/Test";
 // import Form from "./components/Form";
 
 export default function App() {
@@ -7,6 +8,7 @@ export default function App() {
     <div>
         <Header />
         <SubmitForm />
+        {/* <Test /> */}
     </div>
   );
 }

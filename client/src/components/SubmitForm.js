@@ -26,9 +26,9 @@ const SubmitForm = (props) => {
   };
 
   return (
-    <div className="form-container">
+    <div className='form-container'>
       <Form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group controlId="first_name">
+        <Form.Group controlId="first_name" className='max-width-100'>
           <Form.Label>First Name</Form.Label>
           <Form.Control
             type="text"
@@ -49,7 +49,7 @@ const SubmitForm = (props) => {
           )}
         </Form.Group>
 
-        <Form.Group controlId="last_name">
+        <Form.Group controlId="last_name" className='max-width-100'>
           <Form.Label>Last Name</Form.Label>
           <Form.Control
             type="text"
@@ -70,7 +70,7 @@ const SubmitForm = (props) => {
           )}
         </Form.Group>
 
-        <Form.Group controlId="email_address">
+        <Form.Group controlId="email_address" className='max-width-100'>
           <Form.Label>Email address</Form.Label>
           <Form.Control
             type="text"
@@ -91,13 +91,13 @@ const SubmitForm = (props) => {
           )}
         </Form.Group>
         
-        <Button className='form--submit' type="submit">
+        <Button className='form--submit ' type="submit">
           Submit
         </Button>
 
         {errorMessage ? <p className='errorMsg'>{errorMessage}</p> : <p className='successMsg'>{successMessage}</p>}
         {userDetails && (
-              <div className="user-details">
+              <div>
                 <p>Following are the user details:</p>
                 <div>First name: {userDetails.first_name}</div>
                 <div>Last name: {userDetails.last_name}</div>
