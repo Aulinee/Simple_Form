@@ -1,18 +1,53 @@
-import {useState} from 'react';
-import { useForm } from 'react-hook-form';
-import { Form, Button } from 'react-bootstrap';
+import {useState, useEffect} from 'react';
+import { useForm} from 'react-hook-form';
+import { Form, Button} from 'react-bootstrap';
 import axios from 'axios';
-// import { BASE_API_URL } from '../utils/constants';
+import Row from './Row';
 
 const SubmitForm = (props) => {
   const { register, handleSubmit, errors } = useForm();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [userDetails, setUserDetails] = useState('');
+  const [listOfUsers, setListOfUsers] = useState([]);
+
+  const [count, setCount] = useState(1)
+
+  useEffect(() => {
+    console.log("Effect Use")
+      axios.get("http://localhost:3001/getUsers")
+      .then((response) => {
+          setListOfUsers(response.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, [count]);
+
+  console.log(listOfUsers)
+
+  const rowLists = listOfUsers?.map(item => {
+    return (
+        <Row 
+            
+            {...item}
+        />
+    )
+  }) 
 
   const onSubmit = async (data) => {
     try {
-      const response = axios.post("http://localhost:3001/insert", data)
+      const response = axios.post("http://localhost:3001/insert", data); 
+      setCount(prevCount => prevCount + 1);
+      console.log(count)
+      
+      setListOfUsers([
+        ...listOfUsers,
+            userDetails.first_name, 
+            userDetails.last_name,
+            userDetails.email_address
+      ]);
+      
       setSuccessMessage('Successfully submitted!.');
       setErrorMessage('');
       setUserDetails(response.data);
@@ -26,10 +61,10 @@ const SubmitForm = (props) => {
   };
 
   return (
-    <div className='form-container'>
-      <Form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group controlId="first_name" className='max-width-100'>
-          <Form.Label>First Name</Form.Label>
+    <div className='m-auto w-3/5'>
+      <Form className="form bg-white" onSubmit={handleSubmit(onSubmit)}>
+        <Form.Group controlId="first_name" className='w-full'>
+          <Form.Label className='font-medium'>First Name</Form.Label>
           <Form.Control
             type="text"
             name="first_name"
@@ -42,15 +77,15 @@ const SubmitForm = (props) => {
                 message: 'First name should contain only characters.'
               }
             })}
-            className={errors.first_name ? 'form--input outline-red' : 'form--input'}
+            className={errors.first_name ? 'form--input outline-red-600' : 'form--input'}
           />
           {errors.first_name && (
-            <p className="errorMsg margin-0">{errors.first_name.message}</p>
+            <p className="text-red-600 pb-4 m-0">{errors.first_name.message}</p>
           )}
         </Form.Group>
 
-        <Form.Group controlId="last_name" className='max-width-100'>
-          <Form.Label>Last Name</Form.Label>
+        <Form.Group controlId="last_name" className='w-full'>
+          <Form.Label className='font-medium'>Last Name</Form.Label>
           <Form.Control
             type="text"
             name="last_name"
@@ -63,15 +98,15 @@ const SubmitForm = (props) => {
                 message: 'Last name should contain only characters.'
               }
             })}
-            className={errors.last_name ? 'form--input outline-red' : 'form--input'}
+            className={errors.last_name ? 'form--input outline-red-600' : 'form--input'}
           />
           {errors.last_name && (
-            <p className="errorMsg margin-0">{errors.last_name.message}</p>
+            <p className="text-red-600 pb-4 m-0">{errors.last_name.message}</p>
           )}
         </Form.Group>
 
-        <Form.Group controlId="email_address" className='max-width-100'>
-          <Form.Label>Email address</Form.Label>
+        <Form.Group controlId="email_address" className='w-full'>
+          <Form.Label className='font-medium'>Email address</Form.Label>
           <Form.Control
             type="text"
             name="email_address"
@@ -84,10 +119,10 @@ const SubmitForm = (props) => {
                 message: 'Email is not valid.'
               }
             })}
-            className={errors.email_address ? 'form--input outline-red' : 'form--input'}
+            className={errors.email_address ? 'form--input outline-red-600' : 'form--input'}
           />
           {errors.email_address && (
-            <p className="errorMsg margin-0">{errors.email_address.message}</p>
+            <p className="text-red-600 pb-4 m-0">{errors.email_address.message}</p>
           )}
         </Form.Group>
         
@@ -95,17 +130,40 @@ const SubmitForm = (props) => {
           Submit
         </Button>
 
-        {errorMessage ? <p className='errorMsg'>{errorMessage}</p> : <p className='successMsg'>{successMessage}</p>}
-        {userDetails && (
-              <div>
-                <p>Following are the user details:</p>
-                <div>First name: {userDetails.first_name}</div>
-                <div>Last name: {userDetails.last_name}</div>
-                <div>Email: {userDetails.email_address}</div>
-              </div>
-            )}
+        {errorMessage ? <p className='text-red-600'>{errorMessage}</p> : <p className='text-green-700 pt-4'>{successMessage}</p>}
         
       </Form>
+
+      <div className="form bg-white mt-6">
+        <h1 className='text-3xl uppercase font-medium text-black text-center mb-5'>List of users</h1>
+        <table className='border-collapse border border-gray-300'>
+            <thead className="bg-gray-50">
+                <tr>
+                    <th className="px-6 py-2 text-xs text-gray-500">
+                        ID
+                    </th>
+                    <th className="px-6 py-2 text-xs text-gray-500">
+                        First Name
+                    </th>
+                    <th className="px-6 py-2 text-xs text-gray-500">
+                        Last Name
+                    </th>
+                    <th className="px-6 py-2 text-xs text-gray-500">
+                        Email Addres
+                    </th>
+                    <th className="px-6 py-2 text-xs text-gray-500">
+                        Edit
+                    </th>
+                    <th className="px-6 py-2 text-xs text-gray-500">
+                        Delete
+                    </th>
+                </tr>
+            </thead>
+            <tbody className="bg-white">
+                {rowLists}
+            </tbody>
+          </table>
+        </div>
     </div>
   );
 };

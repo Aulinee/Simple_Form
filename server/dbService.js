@@ -23,6 +23,23 @@ class DbService {
         return instance ? instance : new DbService();
     }
 
+    async getAllUsers() {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "SELECT * FROM users;";
+
+                connection.query(query, (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+            // console.log(response);
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async insertNewDetail(firstName, lastName, emailAddress) {
         try {
             const insertId = await new Promise((resolve, reject) => {

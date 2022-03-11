@@ -25,6 +25,17 @@ app.post('/insert', (request, response) => {
     .catch(err => console.log(err));
 });
 
+// read
+app.get('/getUsers', (request, response) => {
+    const db = dbService.getDbServiceInstance();
+
+    const result = db.getAllUsers();
+    
+    result
+    .then(data => response.json({data : data}))
+    .catch(err => console.log(err));
+})
+
 
 
 app.listen(process.env.PORT, () => console.log('app is running'));

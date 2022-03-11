@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   box-sizing: border-box;
 }
@@ -9,20 +13,7 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-.form-title {
-  color: white;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.form-container {
-  width: 60%;
-  margin: auto;
-  justify-content: center;
-}
-
 .form {
-  background-color: white;
   padding: 50px;
   border-radius: 10px;
   display: flex;
@@ -55,26 +46,4 @@ body {
 .form--submit:hover {
   opacity: 0.7;
   cursor: pointer;
-}
-
-.errorMsg {
-  color: red;
-  padding-bottom: 10px;
-}
-
-.successMsg {
-  color: green;
-  padding-bottom: 10px;
-}
-
-.margin-0 {
-  margin: 0;
-}
-
-.outline-red {
-  outline-color: red;
-}
-
-.max-width-100 {
-  width: 100%;
 }

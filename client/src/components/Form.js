@@ -23,16 +23,16 @@ export default function Form() {
 
     function handleSubmit(event){
         event.preventDefault()
-        const {name, value} = event.target
-        axios.post("http://localhost:3001/create", formData)
-        .then(() => {
-            setFormData(prevFormData => {
-                return {
-                    ...prevFormData,
-                    [name]: value
-                }
-            })
-        });
+        // const {name, value} = event.target
+        // axios.post("http://localhost:3001/create", formData)
+        // .then(() => {
+        //     setFormData(prevFormData => {
+        //         return {
+        //             ...prevFormData,
+        //             [name]: value
+        //         }
+        //     })
+        // });
     }
 
     
