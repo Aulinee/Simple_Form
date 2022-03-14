@@ -1,8 +1,9 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, Fragment} from 'react';
 import { useForm} from 'react-hook-form';
 import { Form, Button} from 'react-bootstrap';
 import axios from 'axios';
-import Row from './Row';
+import ReadOnlyRow from './ReadOnlyRow';
+import EditableRow from './EditableRow';
 
 const SubmitForm = (props) => {
   const { register, handleSubmit, errors } = useForm();
@@ -14,46 +15,99 @@ const SubmitForm = (props) => {
   const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
 
+  const [editFormData, setEditFormData] = useState({
+    firstName: "",
+    lastName: "",
+    emailAddress: ""
+  });
+
+  const [editUserId, setEditUserId] = useState(null);
+
   const [count, setCount] = useState(1)
 
-  useEffect(() => {
-    console.log("Effect Use")
-      axios.get("http://localhost:3001/getUsers")
-      .then((response) => {
-          setListOfUsers(response.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }, [count]);
+  const handleEditClick = (user) => {
+    const formValues = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      emailAddress: user.emailAddress,
+    };
 
-  console.log(listOfUsers)
+    setEditUserId(user.userID);
+    setEditFormData(formValues);
+  };
+
+  const handleEditFormChange = (event) => {
+    event.preventDefault();
+
+    const fieldName = event.target.getAttribute("name");
+    const fieldValue = event.target.value;
+
+    const newFormData = { ...editFormData };
+    newFormData[fieldName] = fieldValue;
+
+    setEditFormData(newFormData);
+  };
+
+  const handleCancelClick = () => {
+    setEditUserId(null);
+  };
+
+  const handleAddFormSubmit = (id) => {
+    axios.put(`http://localhost:3001/update/${id}`, {firstname:editFormData.firstName, lastname:editFormData.lastName, emailaddress:editFormData.emailAddress })
+    .then((response) => {
+        setListOfUsers(
+          listOfUsers.filter((val) => {
+            return val.userID == id
+                ? {
+                    firstName: val.firstName,
+                    lastName: val.lastName,
+                    emailAddress: val.emailAddress,
+                  }
+                : val;
+          })
+        );
+        setEditUserId(null);
+      }
+    );
+
+    // const newContact = {
+    //   id: nanoid(),
+    //   fullName: addFormData.fullName,
+    //   address: addFormData.address,
+    //   phoneNumber: addFormData.phoneNumber,
+    //   email: addFormData.email,
+    // };
+
+    // const newContacts = [...contacts, newContact];
+    // setContacts(newContacts);
+  };
   
   const deleteUser = (id) => {
     axios.delete(`http://localhost:3001/delete/${id}`)
     .then((response) => {
       setListOfUsers(
         listOfUsers.filter((val) => {
-          return val.id != id;
+          return val.userID != id;
         })
       );
     });
     console.log("Delete" + id)
   };
 
-  const rowLists = Array.isArray(listOfUsers) && listOfUsers.map(item => {
-    return (
-        <Row 
-            key={item.userID}
-            {...item}
-            handleDelete={deleteUser}
-        />
-    )
-  })
-
   const onSubmit = (data) => {
     try {
-      axios.post("http://localhost:3001/insert", data); 
+      axios.post("http://localhost:3001/insert", data)
+      .then((response) => {
+        setListOfUsers([
+          ...listOfUsers, 
+          {
+            firstName, 
+            lastName,
+            emailAddress
+          }
+        ]
+        );
+      }); 
       
       setCount(prevCount => prevCount + 1);
       setSuccessMessage('Successfully submitted!.');
@@ -67,6 +121,45 @@ const SubmitForm = (props) => {
       }
     }
   };
+
+  const rowLists = Array.isArray(listOfUsers) && listOfUsers.map(item => {
+    return (
+        <Fragment>
+            {editUserId === item.userID ? (
+              <EditableRow
+                editFormData={editFormData}
+                editUserId={editUserId}
+                handleEditFormChange={handleEditFormChange}
+                handleCancelClick={handleCancelClick}
+                handleAddFormSubmit={handleAddFormSubmit}
+              />
+            ) : (
+              <ReadOnlyRow 
+                key={item.userID}
+                {...item}
+                handleUpdate={handleEditClick}
+                handleEditFormChange={handleEditFormChange}
+                handleDelete={deleteUser}
+              />
+            )}
+          </Fragment>
+    )
+  })
+
+  useEffect(() => {
+    console.log("Effect Use")
+    console.log("b" + editFormData);
+    console.log("c" + editUserId);
+
+    axios.get("http://localhost:3001/getUsers")
+    .then((response) => {
+        setListOfUsers(response.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }, [count, editUserId, editFormData]);
+
 
   return (
     <div className='m-auto w-3/5'>

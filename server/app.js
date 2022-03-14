@@ -37,11 +37,17 @@ app.get('/getUsers', (request, response) => {
 })
 
 // update
-app.patch('/update', (request, response) => {
-    const { id, name } = request.body;
+app.put('/update/:id', (request, response) => {
+    console.log("4")
+    const { id } = request.params;
+    const firstname = request.body.firstname;
+    const lastname = request.body.lastname;
+    const emailaddress = request.body.emailaddress;
+    console.log(id)
+    console.log(firstname)
     const db = dbService.getDbServiceInstance();
 
-    const result = db.updateNameById(id, name);
+    const result = db.updateUserById(id, firstname, lastname, emailaddress);
     
     result
     .then(data => response.json({success : data}))
