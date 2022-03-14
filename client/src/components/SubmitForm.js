@@ -69,17 +69,6 @@ const SubmitForm = (props) => {
         setEditUserId(null);
       }
     );
-
-    // const newContact = {
-    //   id: nanoid(),
-    //   fullName: addFormData.fullName,
-    //   address: addFormData.address,
-    //   phoneNumber: addFormData.phoneNumber,
-    //   email: addFormData.email,
-    // };
-
-    // const newContacts = [...contacts, newContact];
-    // setContacts(newContacts);
   };
   
   const deleteUser = (id) => {
@@ -147,9 +136,9 @@ const SubmitForm = (props) => {
   })
 
   useEffect(() => {
-    console.log("Effect Use")
-    console.log("b" + editFormData);
-    console.log("c" + editUserId);
+    // console.log("Effect Use")
+    // console.log("b" + editFormData);
+    // console.log("c" + editUserId);
 
     axios.get("http://localhost:3001/getUsers")
     .then((response) => {
