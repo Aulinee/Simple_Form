@@ -28,31 +28,37 @@ const SubmitForm = (props) => {
   }, [count]);
 
   console.log(listOfUsers)
+  
+  const deleteUser = (id) => {
+    axios.delete(`http://localhost:3001/delete/${id}`)
+    .then((response) => {
+      setListOfUsers(
+        listOfUsers.filter((val) => {
+          return val.id != id;
+        })
+      );
+    });
+    console.log("Delete" + id)
+  };
 
-  const rowLists = listOfUsers?.map(item => {
+  const rowLists = Array.isArray(listOfUsers) && listOfUsers.map(item => {
     return (
         <Row 
             key={item.userID}
             {...item}
+            handleDelete={deleteUser}
         />
     )
-  }) 
+  })
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     try {
+      axios.post("http://localhost:3001/insert", data); 
+      
       setCount(prevCount => prevCount + 1);
-      const response = axios.post("http://localhost:3001/insert", data); 
-      console.log(count)
-      
-      setListOfUsers([
-        ...listOfUsers,
-            firstName, 
-            lastName,
-            emailAddress
-      ]);
-      
       setSuccessMessage('Successfully submitted!.');
       setErrorMessage('');
+
     } catch (error) {
       console.log(error);
       if (error.response) {

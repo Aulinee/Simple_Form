@@ -18,10 +18,10 @@ function Row(props) {
                 {props.emailAddress}
             </td>
             <td className="px-6 py-4">
-                <button className="px-4 py-1 text-sm text-white bg-blue-400 rounded cursor-pointer ">Edit</button>
+                <button className="px-4 py-1 text-sm text-white bg-blue-400 rounded cursor-pointer " >Edit</button>
             </td>
             <td className="px-6 py-4">
-                <button className="px-4 py-1 text-sm text-white bg-red-400 rounded cursor-pointer">Delete</button>
+                <button className="px-4 py-1 text-sm text-white bg-red-400 rounded cursor-pointer" onClick={() => {props.handleDelete(props.userID);}}>Delete</button>
             </td>
         </tr>
     );
