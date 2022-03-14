@@ -8,8 +8,11 @@ const SubmitForm = (props) => {
   const { register, handleSubmit, errors } = useForm();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [userDetails, setUserDetails] = useState('');
+
   const [listOfUsers, setListOfUsers] = useState([]);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
 
   const [count, setCount] = useState(1)
 
@@ -29,7 +32,7 @@ const SubmitForm = (props) => {
   const rowLists = listOfUsers?.map(item => {
     return (
         <Row 
-            
+            key={item.userID}
             {...item}
         />
     )
@@ -37,20 +40,19 @@ const SubmitForm = (props) => {
 
   const onSubmit = async (data) => {
     try {
-      const response = axios.post("http://localhost:3001/insert", data); 
       setCount(prevCount => prevCount + 1);
+      const response = axios.post("http://localhost:3001/insert", data); 
       console.log(count)
       
       setListOfUsers([
         ...listOfUsers,
-            userDetails.first_name, 
-            userDetails.last_name,
-            userDetails.email_address
+            firstName, 
+            lastName,
+            emailAddress
       ]);
       
       setSuccessMessage('Successfully submitted!.');
       setErrorMessage('');
-      setUserDetails(response.data);
     } catch (error) {
       console.log(error);
       if (error.response) {
@@ -66,6 +68,9 @@ const SubmitForm = (props) => {
         <Form.Group controlId="first_name" className='w-full'>
           <Form.Label className='font-medium'>First Name</Form.Label>
           <Form.Control
+            onChange={(event) => {
+              setFirstName(event.target.value);
+            }}
             type="text"
             name="first_name"
             placeholder="Enter your first name"
@@ -88,6 +93,9 @@ const SubmitForm = (props) => {
           <Form.Label className='font-medium'>Last Name</Form.Label>
           <Form.Control
             type="text"
+            onChange={(event) => {
+              setLastName(event.target.value);
+            }}
             name="last_name"
             placeholder="Enter your last name"
             autoComplete="off"
@@ -108,6 +116,9 @@ const SubmitForm = (props) => {
         <Form.Group controlId="email_address" className='w-full'>
           <Form.Label className='font-medium'>Email address</Form.Label>
           <Form.Control
+            onChange={(event) => {
+              setEmailAddress(event.target.value);
+            }}
             type="text"
             name="email_address"
             placeholder="Enter your email address"
@@ -139,9 +150,6 @@ const SubmitForm = (props) => {
         <table className='border-collapse border border-gray-300'>
             <thead className="bg-gray-50">
                 <tr>
-                    <th className="px-6 py-2 text-xs text-gray-500">
-                        ID
-                    </th>
                     <th className="px-6 py-2 text-xs text-gray-500">
                         First Name
                     </th>
